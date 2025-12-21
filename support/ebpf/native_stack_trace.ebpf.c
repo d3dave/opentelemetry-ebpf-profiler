@@ -423,6 +423,8 @@ static EBPF_INLINE ErrorCode unwind_one_frame(UnwindState *state, bool *stop)
         goto err_native_pc_read;
       }
       state->rax            = rt_regs[13];
+      state->rdx            = rt_regs[12];
+      state->rdi            = rt_regs[8];
       state->r9             = rt_regs[1];
       state->r11            = rt_regs[3];
       state->r13            = rt_regs[5];
