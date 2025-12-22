@@ -323,6 +323,12 @@ static EBPF_INLINE u64 unwind_register_address(UnwindState *state, u64 cfa, u8 o
     case 0: // rax
       addr = state->rax;
       break;
+    case 1: // rdx
+      addr = state->rdx;
+      break;
+    case 5: // rdi
+      addr = state->rdi;
+      break;
     case 9: // r9
       addr = state->r9;
       break;
