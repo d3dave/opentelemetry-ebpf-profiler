@@ -457,25 +457,37 @@ static EBPF_INLINE ErrorCode unwind_one_frame(UnwindState *state, bool *stop)
       }
     }
 
-    // Resolve the frame's CFA (previous PC is fixed to CFA) address, and
-    // the previous FP address if any.
-    cfa     = unwind_register_address(state, 0, info->opcode, param);
-    u64 fpa = unwind_register_address(state, cfa, info->fpOpcode, info->fpParam);
+    if (info->opcode != UNWIND_OPCODE_REG_RA) {
+      // Resolve the frame's CFA (previous PC is fixed to CFA) address, and
+      // the previous FP address if any.
+      cfa     = unwind_register_address(state, 0, info->opcode, param);
+      u64 fpa = unwind_register_address(state, cfa, info->fpOpcode, info->fpParam);
 
-    if (fpa) {
-      bpf_probe_read_user(&state->fp, sizeof(state->fp), (void *)fpa);
-    } else if (info->opcode == UNWIND_OPCODE_BASE_FP) {
-      // FP used for recovery, but no new FP value received, clear FP
-      state->fp = 0;
+      if (fpa) {
+        bpf_probe_read_user(&state->fp, sizeof(state->fp), (void *)fpa);
+      } else if (info->opcode == UNWIND_OPCODE_BASE_FP) {
+        // FP used for recovery, but no new FP value received, clear FP
+        state->fp = 0;
+      }
+    }
+    else {
+      state->pc = unwind_register_address(state, 0, UNWIND_OPCODE_BASE_REG, param);
+      if (!state->pc) {
+        goto err_native_pc_read;
+      }
+      goto nonleaf_frame_ok;
     }
   }
 
+  // Read return address from CFA - 8:
   if (!cfa || bpf_probe_read_user(&state->pc, sizeof(state->pc), (void *)(cfa - 8))) {
   err_native_pc_read:
     increment_metric(metricID_UnwindNativeErrPCRead);
     return ERR_NATIVE_PC_READ;
   }
   state->sp = cfa;
+
+nonleaf_frame_ok:
   unwinder_mark_nonleaf_frame(state);
 frame_ok:
   increment_metric(metricID_UnwindNativeFrames);

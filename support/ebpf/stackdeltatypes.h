@@ -13,6 +13,8 @@
 #define UNWIND_OPCODE_BASE_LR  0x04
 // Expression with base value being a Generic Register
 #define UNWIND_OPCODE_BASE_REG 0x05
+// Stackless frame (CFA = SP), Return Address is in register
+#define UNWIND_OPCODE_REG_RA   0x06
 // An opcode flag to indicate that the value should be dereferenced
 #define UNWIND_OPCODEF_DEREF   0x80
 
