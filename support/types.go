@@ -332,6 +332,7 @@ const (
 	UnwindOpcodeBaseFP    uint8 = 0x3
 	UnwindOpcodeBaseLR    uint8 = 0x4
 	UnwindOpcodeBaseReg   uint8 = 0x5
+	UnwindOpcodeRegRA     uint8 = 0x6
 	UnwindOpcodeFlagDeref uint8 = 0x80
 
 	UnwindCommandInvalid      int32 = 0x0
