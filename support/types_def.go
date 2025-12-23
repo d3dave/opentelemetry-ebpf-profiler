@@ -152,6 +152,7 @@ const (
 	UnwindOpcodeBaseFP    uint8 = C.UNWIND_OPCODE_BASE_FP
 	UnwindOpcodeBaseLR    uint8 = C.UNWIND_OPCODE_BASE_LR
 	UnwindOpcodeBaseReg   uint8 = C.UNWIND_OPCODE_BASE_REG
+	UnwindOpcodeRegRA     uint8 = C.UNWIND_OPCODE_REG_RA
 	UnwindOpcodeFlagDeref uint8 = C.UNWIND_OPCODEF_DEREF
 
 	// UnwindCommands from the C header file
